@@ -20,15 +20,17 @@ def get_chrome_path():
             '/usr/bin/chromium-browser',  # Debian/Ubuntu
             '/usr/bin/chromium',           # Alternative path
             '/usr/bin/google-chrome',      # Google Chrome
+            '/usr/bin/google-chrome-stable',  # Google Chrome stable
             '/snap/bin/chromium',          # Snap package
+            '/opt/google/chrome/chrome',   # Alternative Google Chrome
         ]
         for path in chrome_paths:
-            if os.path.exists(path):
+            if path and os.path.exists(path) and os.access(path, os.X_OK):
                 return path
         # Try to find in PATH
-        for cmd in ['chromium-browser', 'chromium', 'google-chrome']:
+        for cmd in ['chromium-browser', 'chromium', 'google-chrome', 'google-chrome-stable']:
             found = shutil.which(cmd)
-            if found:
+            if found and os.access(found, os.X_OK):
                 return found
     # Windows/Mac - webdriver-manager will handle it
     return None
@@ -74,6 +76,15 @@ def fetch_html(url: str, timeout: int = 30, headless: bool = True) -> str:
     chrome_options = get_chrome_options(headless)
     driver = None
     try:
+        # Check if Chrome is available on Linux
+        if platform.system() == 'Linux':
+            chrome_path = get_chrome_path()
+            if not chrome_path:
+                raise WebDriverException(
+                    "Chrome/Chromium not found on the server. "
+                    "Please ensure packages.txt includes chromium-browser and the app has been redeployed."
+                )
+        
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.set_page_load_timeout(timeout)
@@ -102,6 +113,15 @@ def fetch_html_with_info(url: str, timeout: int = 30, headless: bool = True) -> 
     chrome_options = get_chrome_options(headless)
     driver = None
     try:
+        # Check if Chrome is available on Linux
+        if platform.system() == 'Linux':
+            chrome_path = get_chrome_path()
+            if not chrome_path:
+                raise WebDriverException(
+                    "Chrome/Chromium not found on the server. "
+                    "Please ensure packages.txt includes chromium-browser and the app has been redeployed."
+                )
+        
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.set_page_load_timeout(timeout)
