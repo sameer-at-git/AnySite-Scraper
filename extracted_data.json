@@ -1,0 +1,38 @@
+[
+  {
+    "Skill":"Large Language Modeling",
+    "Description":"Learn how to use AutoGen to build multi-agent systems with diverse roles and capabilities for implementing complex AI applications."
+  },
+  {
+    "Skill":"Agentic systems",
+    "Description":"Implement agentic design patterns: Reflection, Tool use, Planning, and Multi-agent collaboration using AutoGen."
+  },
+  {
+    "Skill":"Prompt Engineering",
+    "Description":"Learn directly from the creators of AutoGen, Chi Wang and Qingyun Wu."
+  },
+  {
+    "Skill":"Generative AI",
+    "Description":"Use the AutoGen framework with any model via API call or locally within your own environment."
+  },
+  {
+    "Skill":"Tool Calling",
+    "Description":"Implement the tool use design pattern to create a conversational chess game where two agent players can call a tool and make legal moves on the chessboard."
+  },
+  {
+    "Skill":"Generative AI Agents",
+    "Description":"Create a coding agent capable of generating the necessary code to plot stock gains for financial analysis."
+  },
+  {
+    "Skill":"Software Design Patterns",
+    "Description":"Implement multi-agent systems in your workflows."
+  },
+  {
+    "Skill":"Artificial Intelligence",
+    "Description":"Build and customize multi-agent systems, enabling agents to take on different roles and collaborate to accomplish complex tasks using AutoGen."
+  },
+  {
+    "Skill":"LLM Application",
+    "Description":"Develop a system where reviewer agents, nested within a critic agent, reflect on the blog post written by another agent."
+  }
+]
