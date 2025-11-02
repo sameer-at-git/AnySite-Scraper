@@ -17,8 +17,8 @@ def get_chrome_path():
     # Check if we're on Linux (Streamlit Cloud)
     if platform.system() == 'Linux':
         chrome_paths = [
-            '/usr/bin/chromium-browser',  # Debian/Ubuntu
-            '/usr/bin/chromium',           # Alternative path
+            '/usr/bin/chromium',           # Debian Bookworm (primary)
+            '/usr/bin/chromium-browser',   # Older Debian/Ubuntu
             '/usr/bin/google-chrome',      # Google Chrome
             '/usr/bin/google-chrome-stable',  # Google Chrome stable
             '/snap/bin/chromium',          # Snap package
@@ -27,8 +27,8 @@ def get_chrome_path():
         for path in chrome_paths:
             if path and os.path.exists(path) and os.access(path, os.X_OK):
                 return path
-        # Try to find in PATH
-        for cmd in ['chromium-browser', 'chromium', 'google-chrome', 'google-chrome-stable']:
+        # Try to find in PATH (chromium is primary on Debian Bookworm)
+        for cmd in ['chromium', 'chromium-browser', 'google-chrome', 'google-chrome-stable']:
             found = shutil.which(cmd)
             if found and os.access(found, os.X_OK):
                 return found
