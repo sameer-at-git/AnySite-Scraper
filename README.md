@@ -2,6 +2,31 @@
 
 A Streamlit application that allows users to scrape websites, clean HTML content, and extract structured data using AI-powered extraction with LangChain and Groq.
 
+## Overview
+
+Here's a visual walkthrough of the application:
+
+1. **Scrape Page**
+   ![Scrape Page](assets/1.Scrape-Page.png)
+
+2. **Data Extractor Page**
+   ![Data Extractor Page](assets/2.Data-Extractor-Page.png)
+
+3. **Target Page**
+   ![Target Page](assets/3.Target-Page.png)
+
+4. **Finished Scrape Page**
+   ![Finished Scrape Page](assets/4.Finihsed-Scrape-page.png)
+
+5. **Details Scrape Page**
+   ![Details Scrape Page](assets/5.Details-Scrape-page.png)
+
+6. **Extracting Page**
+   ![Extracting Page](assets/6.Extracting-page.png)
+
+7. **Finished Extracting Page**
+   ![Finished Extracting Page](assets/7.Finished-Extracting-Page.png)
+
 ## Features
 
 - **Website Scraping**: Fetch full HTML content from any website using Selenium
