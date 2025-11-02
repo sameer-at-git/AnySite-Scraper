@@ -6,10 +6,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, WebDriverException
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
 import os
 import time
 import shutil
 import platform
+import subprocess
+import re
 
 
 def get_chrome_path():
@@ -33,6 +36,33 @@ def get_chrome_path():
             if found and os.access(found, os.X_OK):
                 return found
     # Windows/Mac - webdriver-manager will handle it
+    return None
+
+
+def get_chrome_version(chrome_path=None):
+    """Get the full version of Chrome/Chromium installed."""
+    if not chrome_path:
+        chrome_path = get_chrome_path()
+    
+    if not chrome_path:
+        return None
+    
+    try:
+        # Try to get version using --version flag
+        result = subprocess.run(
+            [chrome_path, '--version'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        if result.returncode == 0:
+            # Extract full version number (e.g., "Chromium 142.0.7444.59" -> "142.0.7444.59")
+            match = re.search(r'(\d+\.\d+\.\d+\.\d+)', result.stdout)
+            if match:
+                return match.group(1)  # Return full version
+    except (subprocess.TimeoutExpired, FileNotFoundError, Exception):
+        pass
+    
     return None
 
 
@@ -76,16 +106,47 @@ def fetch_html(url: str, timeout: int = 30, headless: bool = True) -> str:
     chrome_options = get_chrome_options(headless)
     driver = None
     try:
-        # Check if Chrome is available on Linux
+        # Check if Chrome is available and get version on Linux
+        chrome_path = None
+        chrome_version = None
         if platform.system() == 'Linux':
             chrome_path = get_chrome_path()
             if not chrome_path:
                 raise WebDriverException(
                     "Chrome/Chromium not found on the server. "
-                    "Please ensure packages.txt includes chromium-browser and the app has been redeployed."
+                    "Please ensure packages.txt includes chromium and the app has been redeployed."
                 )
+            chrome_version = get_chrome_version(chrome_path)
         
-        service = Service(ChromeDriverManager().install())
+        # Use ChromeDriverManager with proper version matching for Chromium
+        if platform.system() == 'Linux' and chrome_path:
+            # For Chromium on Linux, we need to force webdriver-manager to get the LATEST driver
+            # The cached driver (114) is too old. Clear cache and download fresh.
+            try:
+                # Try to clear old cached driver first to force fresh download
+                wdm_cache_dir = os.path.expanduser('~/.wdm/drivers/chromedriver')
+                if os.path.exists(wdm_cache_dir):
+                    # Remove old cached drivers to force fresh download
+                    try:
+                        shutil.rmtree(wdm_cache_dir)
+                    except Exception:
+                        pass  # If we can't delete, continue anyway
+                
+                # Use Chromium type which should match better with Chromium browser
+                driver_manager = ChromeDriverManager(chrome_type=ChromeType.CHROMIUM)
+                service = Service(driver_manager.install())
+            except Exception:
+                try:
+                    # Fallback: try standard manager but it might use old cached driver
+                    driver_manager = ChromeDriverManager()
+                    service = Service(driver_manager.install())
+                except Exception:
+                    # Last resort
+                    service = Service(ChromeDriverManager().install())
+        else:
+            # Windows/Mac - standard detection
+            service = Service(ChromeDriverManager().install())
+        
         driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.set_page_load_timeout(timeout)
         driver.get(url)
@@ -113,16 +174,47 @@ def fetch_html_with_info(url: str, timeout: int = 30, headless: bool = True) -> 
     chrome_options = get_chrome_options(headless)
     driver = None
     try:
-        # Check if Chrome is available on Linux
+        # Check if Chrome is available and get version on Linux
+        chrome_path = None
+        chrome_version = None
         if platform.system() == 'Linux':
             chrome_path = get_chrome_path()
             if not chrome_path:
                 raise WebDriverException(
                     "Chrome/Chromium not found on the server. "
-                    "Please ensure packages.txt includes chromium-browser and the app has been redeployed."
+                    "Please ensure packages.txt includes chromium and the app has been redeployed."
                 )
+            chrome_version = get_chrome_version(chrome_path)
         
-        service = Service(ChromeDriverManager().install())
+        # Use ChromeDriverManager with proper version matching for Chromium
+        if platform.system() == 'Linux' and chrome_path:
+            # For Chromium on Linux, we need to force webdriver-manager to get the LATEST driver
+            # The cached driver (114) is too old. Clear cache and download fresh.
+            try:
+                # Try to clear old cached driver first to force fresh download
+                wdm_cache_dir = os.path.expanduser('~/.wdm/drivers/chromedriver')
+                if os.path.exists(wdm_cache_dir):
+                    # Remove old cached drivers to force fresh download
+                    try:
+                        shutil.rmtree(wdm_cache_dir)
+                    except Exception:
+                        pass  # If we can't delete, continue anyway
+                
+                # Use Chromium type which should match better with Chromium browser
+                driver_manager = ChromeDriverManager(chrome_type=ChromeType.CHROMIUM)
+                service = Service(driver_manager.install())
+            except Exception:
+                try:
+                    # Fallback: try standard manager but it might use old cached driver
+                    driver_manager = ChromeDriverManager()
+                    service = Service(driver_manager.install())
+                except Exception:
+                    # Last resort
+                    service = Service(ChromeDriverManager().install())
+        else:
+            # Windows/Mac - standard detection
+            service = Service(ChromeDriverManager().install())
+        
         driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.set_page_load_timeout(timeout)
         driver.get(url)
