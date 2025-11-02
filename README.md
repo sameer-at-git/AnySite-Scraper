@@ -1,5 +1,15 @@
 # Web Scraper & Data Extractor
 
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Link-FF4B4B?style=for-the-badge)](https://anysite-scraper.streamlit.app/)
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![Selenium](https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
+![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-FF6B35?style=for-the-badge&logo=beautifulsoup&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-0084FF?style=for-the-badge&logo=groq&logoColor=white)
+
 A Streamlit application that allows users to scrape websites, clean HTML content, and extract structured data using AI-powered extraction with LangChain and Groq.
 
 ## Overview
